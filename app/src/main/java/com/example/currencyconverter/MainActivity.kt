@@ -1,7 +1,6 @@
 package com.example.currencyconverter
 
 import android.content.Context
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,21 +17,47 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
+        setupDropDownArrayAdapter()
+        hideProgressBar()
+
 
         btnConvert.setOnClickListener {
-            //showProgressBar()
-            val from = actvFromCurrency.text.toString()
-            val to = actvToCurrency.text.toString()
-            val query = "${from.trim()}_${to.trim()}"
+
+            val from = actvFromCurrency.text
+            val to = actvToCurrency.text
+            val query = "${from.toString().trim()}_${to.toString().trim()}"
+            setupDropDownArrayAdapter()
+            showProgressBar()
             fetchData(query)
             closeKeyBoard()
+
             Log.d(
                 "Query",
                 "https://free.currconv.com/api/v7/convert?q=${query.trim()}&compact=ultra&apiKey=ab8ebe0173aac42a9665"
             )
-            //hideProgressBar()
 
         }
+
+        btnInvert.setOnClickListener {
+
+            val currentFrom = actvFromCurrency.text
+            val currentTo = actvToCurrency.text
+            val reversedQuery = "${currentTo.toString().trim()}_${currentFrom.toString().trim()}"
+            actvFromCurrency.text = currentTo
+            actvToCurrency.text = currentFrom
+            Log.d("Variables","NewFrom : ${actvFromCurrency.text}, NewTo : ${actvToCurrency.text}")
+            setupDropDownArrayAdapter()
+            showProgressBar()
+            fetchData(reversedQuery)
+            closeKeyBoard()
+
+            Log.d(
+                "Query",
+                "https://free.currconv.com/api/v7/convert?q=${reversedQuery.trim()}&compact=ultra&apiKey=ab8ebe0173aac42a9665"
+            )
+
+        }
+
 
 
     }
@@ -48,32 +73,34 @@ class MainActivity : AppCompatActivity() {
                 val result = String.format("%.3f",response.getDouble(query) * amount)
                 val conversion = "$amount ${actvFromCurrency.text} = $result ${actvToCurrency.text}"
                 tvResult.text = conversion
+                hideProgressBar()
+
             },
             { error ->
-                Toast.makeText(this, "MainActivity: $error", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error: ${error.networkResponse.statusCode}", Toast.LENGTH_LONG).show()
             }
         )
 
         MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun setupDropDownArrayAdapter(){
         val currencies = resources.getStringArray(R.array.currency_codes)
         val dropDownArrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, currencies)
         actvFromCurrency.setAdapter(dropDownArrayAdapter)
         actvToCurrency.setAdapter(dropDownArrayAdapter)
-
     }
 
-//
-//    private fun hideProgressBar() {
-//        progressBar.visibility = View.INVISIBLE
-//    }
-//
-//    private fun showProgressBar() {
-//        progressBar.visibility = View.VISIBLE
-//    }
+
+
+
+    private fun hideProgressBar() {
+        progressBar.visibility = View.INVISIBLE
+    }
+
+    private fun showProgressBar() {
+        progressBar.visibility = View.VISIBLE
+    }
 
     private fun closeKeyBoard() {
         val view = this.currentFocus
