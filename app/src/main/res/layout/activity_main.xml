@@ -63,6 +63,7 @@
             android:id="@+id/actvFromCurrency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="United States Dollar USD"
             android:textColor="#21d3ac"
             android:textStyle="bold"
             android:inputType="none"/>
@@ -102,6 +103,7 @@
             android:id="@+id/actvToCurrency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Indian Rupee INR"
             android:textColor="#21d3ac"
             android:textStyle="bold"
             android:inputType="none"/>
