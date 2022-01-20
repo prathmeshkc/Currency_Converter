@@ -32,6 +32,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        actvFromCurrency.setOnClickListener {
+            closeKeyBoard()
+        }
+        actvToCurrency.setOnClickListener {
+            closeKeyBoard()
+        }
+
         btnConvert.setOnClickListener {
 
             val from = convertFullCurrencytoShort(actvFromCurrency.text)
@@ -58,6 +65,8 @@ class MainActivity : AppCompatActivity() {
 
             val currentFrom = actvFromCurrency.text
             val currentTo = actvToCurrency.text
+            actvFromCurrency.dismissDropDown()
+            actvToCurrency.dismissDropDown()
             val reversedQuery = "${convertFullCurrencytoShort(currentTo).trim()}_${
                 convertFullCurrencytoShort(currentFrom).trim()
             }"
